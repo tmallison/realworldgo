@@ -1,18 +1,26 @@
 package main
 
 import (
+	"flag"
 	"net/http"
 	"os"
 	"fmt"
 )
 
 func main() {
-	dir, err := os.Getwd()
+	var dir string
 
-	if err != nil {
-		fmt.Println("Error:", err)
-		os.Exit(1)
+	port := flag.String("port", "3000", "port to serve HTTP on")
+	path := flag.String("path", "", "path to server")
+	flag.Parse()
+
+	if *path == "" {
+		dir, _ = os.Getwd()
+	} else {
+		dir = *path
 	}
 
-	http.ListenAndServe(":3000", http.FileServer(http.Dir(dir)))
+	fmt.Println(dir)
+
+	http.ListenAndServe(":"+*port, http.FileServer(http.Dir(dir)))
 }
